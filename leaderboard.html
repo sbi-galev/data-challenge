@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard &mdash; SBI Data Challenge</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="logo">SBI Data Challenge</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="submit.html">Submit</a>
+        <a href="leaderboard.html" class="active">Leaderboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero hero-small">
+    <h1>Leaderboard</h1>
+    <p>Public scores for accepted submissions.</p>
+  </header>
+
+  <main>
+    <section class="submit-section wide">
+      <p class="leaderboard-meta" id="leaderboard-meta">Loading leaderboard&hellip;</p>
+      <div class="leaderboard-wrap">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Team</th>
+              <th>Track</th>
+              <th>Version</th>
+              <th class="num">RMSE</th>
+              <th class="num">MAE</th>
+              <th>Scored</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-rows"></tbody>
+        </table>
+      </div>
+      <p class="fine-print" id="leaderboard-empty" hidden>
+        No scored submissions yet.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 SBI Data Challenge</p>
+  </footer>
+
+  <script>
+    const ENDPOINT = "https://galaxy-sbi-challenge-submission-api.hf.space/api/leaderboard.json";
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function formatNumber(value) {
+      if (typeof value !== "number" || Number.isNaN(value)) return "&mdash;";
+      return value.toFixed(4);
+    }
+
+    function formatTime(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    }
+
+    async function loadLeaderboard() {
+      const meta = document.getElementById("leaderboard-meta");
+      const tbody = document.getElementById("leaderboard-rows");
+      const empty = document.getElementById("leaderboard-empty");
+
+      try {
+        const res = await fetch(ENDPOINT, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        const entries = Array.isArray(data.entries) ? data.entries : [];
+
+        if (entries.length === 0) {
+          meta.textContent = "No scored submissions yet.";
+          empty.hidden = false;
+          return;
+        }
+
+        const metric = (data.metric || "rmse").toUpperCase();
+        const direction = data.lower_is_better === false ? "higher is better" : "lower is better";
+        const generated = formatTime(data.generated_at) || "unknown";
+        meta.textContent = "Ranked by " + metric + " (" + direction + "). Last updated " + generated + ".";
+
+        for (const entry of entries) {
+          const row = document.createElement("tr");
+          const metrics = entry.metrics || {};
+          row.innerHTML =
+            "<td>" + escapeHtml(entry.rank ?? "") + "</td>" +
+            "<td>" + escapeHtml(entry.team_name || entry.team_id || "") + "</td>" +
+            "<td>" + escapeHtml(entry.track || "") + "</td>" +
+            "<td>" + escapeHtml(entry.blinded_features_version || "") + "</td>" +
+            "<td class=\"num\">" + formatNumber(metrics.rmse) + "</td>" +
+            "<td class=\"num\">" + formatNumber(metrics.mae) + "</td>" +
+            "<td>" + escapeHtml(formatTime(entry.scored_at)) + "</td>";
+          tbody.appendChild(row);
+        }
+      } catch (err) {
+        meta.textContent = "Could not load leaderboard: " + err.message;
+      }
+    }
+
+    loadLeaderboard();
+  </script>
+</body>
+</html>

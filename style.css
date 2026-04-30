@@ -203,6 +203,35 @@ button:hover {
   border: 1px solid #a8c7fa;
 }
 
+/* Leaderboard */
+.leaderboard-meta {
+  color: #555;
+  margin-bottom: 0.75rem;
+}
+.leaderboard-wrap {
+  overflow-x: auto;
+}
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.leaderboard-table th {
+  background: #f0f0f5;
+  color: #1a1a2e;
+  font-weight: 600;
+}
+.leaderboard-table th.num,
+.leaderboard-table td.num {
+  text-align: right;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 /* Footer */
 footer {
   text-align: center;
