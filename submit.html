@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit &mdash; SBI Data Challenge</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="logo">SBI Data Challenge</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="submit.html" class="active">Submit</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero hero-small">
+    <h1>Submit Your Results</h1>
+    <p>Upload posterior samples for evaluation.</p>
+  </header>
+
+  <main>
+    <section class="submit-section">
+      <form id="submission-form">
+        <label for="team-name">Team Name</label>
+        <input type="text" id="team-name" name="team_name" required placeholder="e.g. BayesBoyz">
+
+        <label for="method">Method</label>
+        <input type="text" id="method" name="method" required placeholder="e.g. Neural Posterior Estimation">
+
+        <label for="description">Brief Description</label>
+        <textarea id="description" name="description" rows="4" placeholder="Describe your approach in a few sentences."></textarea>
+
+        <label for="file-upload">Posterior Samples (CSV or NPY)</label>
+        <input type="file" id="file-upload" name="file" accept=".csv,.npy" required>
+
+        <button type="submit">Submit</button>
+      </form>
+
+      <div id="submission-status" class="status" hidden></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 SBI Data Challenge</p>
+  </footer>
+
+  <script>
+    // TODO: Wire up to a Hugging Face Inference API endpoint.
+    //
+    // Example integration:
+    //   const HF_API_URL = "https://your-space.hf.space/api/submit";
+    //
+    //   async function submitToHuggingFace(formData) {
+    //     const response = await fetch(HF_API_URL, {
+    //       method: "POST",
+    //       body: formData,
+    //     });
+    //     return response.json();
+    //   }
+
+    document.getElementById("submission-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const status = document.getElementById("submission-status");
+      status.hidden = false;
+      status.textContent = "Submissions are not yet open. Check back soon!";
+      status.className = "status info";
+    });
+  </script>
+</body>
+</html>
