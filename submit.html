@@ -19,57 +19,45 @@
 
   <header class="hero hero-small">
     <h1>Submit Your Results</h1>
-    <p>Upload posterior samples for evaluation.</p>
+    <p>Sign in with Hugging Face and upload your latest submission archive.</p>
   </header>
 
   <main>
-    <section class="submit-section">
-      <form id="submission-form">
-        <label for="team-name">Team Name</label>
-        <input type="text" id="team-name" name="team_name" required placeholder="e.g. BayesBoyz">
+    <section class="submit-section wide">
+      <h2>Submission Portal</h2>
+      <p>
+        Submissions are handled by the Hugging Face Space backend. The Space
+        manages login, validation, and storage, so this GitHub Pages site never
+        sees a write token.
+      </p>
 
-        <label for="method">Method</label>
-        <input type="text" id="method" name="method" required placeholder="e.g. Neural Posterior Estimation">
+      <div class="actions">
+        <a class="button-link" href="https://huggingface.co/spaces/galaxy-sbi-challenge/submission-api">
+          Open Hugging Face Space
+        </a>
+        <a class="button-link secondary" href="https://galaxy-sbi-challenge-submission-api.hf.space/submit-ui">
+          Open Upload Form
+        </a>
+      </div>
 
-        <label for="description">Brief Description</label>
-        <textarea id="description" name="description" rows="4" placeholder="Describe your approach in a few sentences."></textarea>
+      <div class="submission-frame-wrap">
+        <iframe
+          class="submission-frame"
+          src="https://galaxy-sbi-challenge-submission-api.hf.space/submit-ui"
+          title="SBI Data Challenge submission form"
+          loading="lazy"
+        ></iframe>
+      </div>
 
-        <label for="file-upload">Posterior Samples (CSV or NPY)</label>
-        <input type="file" id="file-upload" name="file" accept=".csv,.npy" required>
-
-        <button type="submit">Submit</button>
-      </form>
-
-      <div id="submission-status" class="status" hidden></div>
+      <p class="fine-print">
+        If the embedded login flow is blocked by your browser, open the upload
+        form directly in a new tab.
+      </p>
     </section>
   </main>
 
   <footer>
     <p>&copy; 2026 SBI Data Challenge</p>
   </footer>
-
-  <script>
-    // TODO: Wire up to a Hugging Face Inference API endpoint.
-    //
-    // Example integration:
-    //   const HF_API_URL = "https://your-space.hf.space/api/submit";
-    //
-    //   async function submitToHuggingFace(formData) {
-    //     const response = await fetch(HF_API_URL, {
-    //       method: "POST",
-    //       body: formData,
-    //     });
-    //     return response.json();
-    //   }
-
-    document.getElementById("submission-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const status = document.getElementById("submission-status");
-      status.hidden = false;
-      status.textContent = "Submissions are not yet open. Check back soon!";
-      status.className = "status info";
-    });
-  </script>
 </body>
 </html>
