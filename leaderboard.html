@@ -31,11 +31,13 @@
           <thead>
             <tr>
               <th>Rank</th>
-              <th>Team</th>
-              <th>Track</th>
+              <th>Team ID</th>
+              <th>Challenge</th>
               <th>Version</th>
-              <th class="num">RMSE</th>
-              <th class="num">MAE</th>
+              <th>Track</th>
+              <th class="num">Mean RMSE</th>
+              <th class="num">Mean MAE</th>
+              <th class="num">Coverage</th>
               <th>Scored</th>
             </tr>
           </thead>
@@ -92,21 +94,23 @@
           return;
         }
 
-        const metric = (data.metric || "rmse").toUpperCase();
+        const metric = data.metric || "point_rmse_mean";
         const direction = data.lower_is_better === false ? "higher is better" : "lower is better";
         const generated = formatTime(data.generated_at) || "unknown";
-        meta.textContent = "Ranked by " + metric + " (" + direction + "). Last updated " + generated + ".";
+        meta.textContent = "Ranked by " + metric + " (" + direction + ") within each challenge. Last updated " + generated + ".";
 
         for (const entry of entries) {
           const row = document.createElement("tr");
-          const metrics = entry.metrics || {};
+          const summary = entry.summary || {};
           row.innerHTML =
             "<td>" + escapeHtml(entry.rank ?? "") + "</td>" +
-            "<td>" + escapeHtml(entry.team_name || entry.team_id || "") + "</td>" +
+            "<td>" + escapeHtml(entry.team_id || "") + "</td>" +
+            "<td>" + escapeHtml(entry.challenge_id || "") + "</td>" +
+            "<td>" + escapeHtml(entry.dataset_version || "") + "</td>" +
             "<td>" + escapeHtml(entry.track || "") + "</td>" +
-            "<td>" + escapeHtml(entry.blinded_features_version || "") + "</td>" +
-            "<td class=\"num\">" + formatNumber(metrics.rmse) + "</td>" +
-            "<td class=\"num\">" + formatNumber(metrics.mae) + "</td>" +
+            "<td class=\"num\">" + formatNumber(summary.point_rmse_mean) + "</td>" +
+            "<td class=\"num\">" + formatNumber(summary.point_mae_mean) + "</td>" +
+            "<td class=\"num\">" + formatNumber(summary.posterior_coverage_mean) + "</td>" +
             "<td>" + escapeHtml(formatTime(entry.scored_at)) + "</td>";
           tbody.appendChild(row);
         }
